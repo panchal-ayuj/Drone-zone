@@ -1,26 +1,27 @@
 import java.util.*;
 
 public class Main {
-    static class pair
+    static class Pair
     {
         int first, second;
 
-        public pair(int first, int second)
+        public Pair(int first, int second)
         {
             this.first = first;
             this.second = second;
         }
     }
-    static int dRow[] = { -1, 0, 1, 0 };
-    static int dCol[] = { 0, 1, 0, -1 };
+    static int nextY[] = { -1, 0, 1, 0 };
+    static int nextX[] = { 0, 1, 0, -1 };
 
     public static void main(String[] args) {
         List<List<Integer>> grid = new ArrayList<List<Integer>>();
+
         Scanner scanner = new Scanner(System.in);
         System.out.print("Enter cols and rows: ");
         int cols = scanner.nextInt();
         int rows = scanner.nextInt();
-//        System.out.println("You entered " + x + " and " + y);
+
         for (int i = 0; i < rows; i++){
             List<Integer> l1 = new ArrayList<>();
             for (int j = 0; j < cols; j++){
@@ -28,14 +29,15 @@ public class Main {
             }
             grid.add(l1);
         }
+
         int noOfDrones = 4;
-        List<pair> droneList = new ArrayList<pair>();
+        List<Pair> droneList = new ArrayList<Pair>();
         for (int i = 0; i < noOfDrones; i++){
             System.out.println("Enter drone's x and y pos: ");
             int droneX = scanner.nextInt();
             int droneY = scanner.nextInt();
             grid.get(droneY).set(droneX, 1);
-            pair newPair = new pair(droneX, droneY);
+            Pair newPair = new Pair(droneX, droneY);
             droneList.add(newPair);
         }
 
@@ -53,6 +55,7 @@ public class Main {
             }
             vis.add(l1);
         }
+
         for (int k = 0; k<noOfDrones; k++){
             BFS(grid, vis, droneList.get(k).second, droneList.get(k).first, rows, cols);
             System.out.println(vis);
@@ -75,33 +78,29 @@ public class Main {
     }
 
     public static void BFS(List<List<Integer>> grid, List<List<Boolean>> vis, int row, int col, int rows, int cols){
-        Queue<pair> q = new LinkedList<>();
-        q.add(new pair(row,col));
+        Queue<Pair> q = new LinkedList<>();
+        q.add(new Pair(row,col));
         vis.get(row).set(col, true);
         Boolean targetFound = false;
         while (!q.isEmpty() && !targetFound){
-            pair cell = q.peek();
-            int y = cell.first;
-            int x = cell.second;
+            int y = q.peek().first;
+            int x = q.peek().second;
             q.remove();
-//            if(!targetFound){
-                System.out.println("X axis: " + x + ", Y axis: " + y);
-//            }
+            System.out.println("X axis: " + x + ", Y axis: " + y);
             for(int i=0; i < 4; i++){
-                int adjy = y + dRow[i];
-                int adjx = x + dCol[i];
+                int newY = y + nextY[i];
+                int newX = x + nextX[i];
 
-                if (isValid(vis, adjy, adjx, rows, cols)){
-                    q.add(new pair(adjy, adjx));
-                    vis.get(adjy).set(adjx, true);
-                    if(grid.get(adjy).get(adjx) == 2){
+                if (isValid(vis, newY, newX, rows, cols)){
+                    q.add(new Pair(newY, newX));
+                    vis.get(newY).set(newX, true);
+                    if(grid.get(newY).get(newX) == 2){
                         System.out.println("Target found!!");
                         targetFound = true;
                     }
                 }
             }
         }
-
     }
 }
 
